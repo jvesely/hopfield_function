@@ -35,13 +35,17 @@ class HopfieldNetwork(object):
         partial_data[partial_data < 0.5] = -1
        
         # turn partial data into column vector
+#        probe = np.asarray(partial_data)
         probe = np.asmatrix(partial_data).transpose()
         assert partial_data.size  == self.__matrix.shape[0]
 
         # iterate
         # Synchronous update, should we try asynchronous?
         for i in range(iterations):
+#            for v in np.random.permutation(probe.size):
+#                probe[v] = np.sign(np.dot(self.__matrix[v], probe))
             probe = np.sign(np.matmul(self.__matrix, probe))
+#            print(probe)
 
         # turn column vector back into array
         res = np.squeeze(np.asarray(probe.transpose()))
