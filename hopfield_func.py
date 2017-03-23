@@ -10,19 +10,19 @@ class HopfieldFunc(HopfieldNetwork):
         self.__domain_bits = domain_bits
         self.__range_bits = range_bits
         #using super() does not work for some reason
-        HopfieldNetwork.__init__(self, domain_bits + range_bits, iterations)
+        self.__network = HopfieldNetwork(domain_bits + range_bits, iterations)
 
     def set(self, x, y):
         bin_x = np.array([int(x) for x in bin(x)[2:]])
         bin_y = np.array([int(y) for y in bin(y)[2:]])
-        self.remember(np. concatenate(( \
+        self.__network.remember(np. concatenate(( \
                       np.zeros(self.__domain_bits - bin_x.size), \
                       bin_x, \
                       np.zeros(self.__range_bits - bin_y.size), bin_y)))
 
     def get(self, x):
         bin_x = np.array([int(x) for x in bin(x)[2:]])
-        memory = self.recall(np. concatenate(( \
+        memory = self.__network.recall(np. concatenate(( \
                     np.zeros(self.__domain_bits - bin_x.size), bin_x, \
                     np.zeros(self.__range_bits))))
 #        print(memory)
