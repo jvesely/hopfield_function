@@ -3,10 +3,11 @@
 import numpy as np
 
 class HopfieldNetwork(object):
-    def __init__(self, dim, iterations = 1000, async = False):
+    async_default = False
+    iterations_default = 1000
+    def __init__(self, dim, iterations = iterations_default, async = async_default):
         assert dim > 0
         self.__matrix = np.zeros((dim,dim))
-        self.__memories = 0
         self.__iterations = iterations
         self.__async = async
 
@@ -28,7 +29,6 @@ class HopfieldNetwork(object):
 
         # add the new memory to memory matrix
         self.__matrix = (self.__matrix + new_memory);
-        self.__memories += 1
    
     def recall(self, partial_data, iterations = None):
         assert partial_data.size  == self.__matrix.shape[0]
