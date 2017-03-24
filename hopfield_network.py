@@ -3,11 +3,12 @@
 import numpy as np
 
 class HopfieldNetwork(object):
-    def __init__(self, dim, iterations = 1000):
+    def __init__(self, dim, iterations = 1000, async = False):
         assert dim > 0
         self.__matrix = np.zeros((dim,dim))
         self.__memories = 0
         self.__iterations = iterations
+        self.__async = async
 
     ''' the matrix format is:
         sum{p}{outer_product(memory_i, memory_i)} /N  - (p/N)(Identity)
@@ -30,22 +31,23 @@ class HopfieldNetwork(object):
         self.__memories += 1
    
     def recall(self, partial_data, iterations = None):
+        assert partial_data.size  == self.__matrix.shape[0]
+
         # get iterations overload
         iterations = self.__iterations if (iterations is None) else iterations
         partial_data[partial_data < 0.5] = -1
        
         # turn partial data into column vector
-#        probe = np.asarray(partial_data)
-        probe = np.asmatrix(partial_data).transpose()
-        assert partial_data.size  == self.__matrix.shape[0]
+        probe = np.asarray(partial_data) if self.__async else np.asmatrix(partial_data).transpose()
 
         # iterate
-        # Synchronous update, should we try asynchronous?
         for i in range(iterations):
-#            for v in np.random.permutation(probe.size):
-#                probe[v] = np.sign(np.dot(self.__matrix[v], probe))
-            probe = np.sign(np.matmul(self.__matrix, probe))
-#            print(probe)
+            if self.__async:
+                # Use random async
+                for v in np.random.permutation(probe.size):
+                    probe[v] = np.sign(np.dot(self.__matrix[v], probe))
+            else:
+                probe = np.sign(np.matmul(self.__matrix, probe))
 
         # turn column vector back into array
         res = np.squeeze(np.asarray(probe.transpose()))
