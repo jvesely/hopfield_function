@@ -3,21 +3,22 @@
 import numpy as np
 from hopfield_func import HopfieldFunc
 
-BITS = 32
+DOM_BITS = 36
+RNG_BITS = 34
 COUNT = 10
 
-hf = HopfieldFunc(BITS, BITS)
+hf = HopfieldFunc(DOM_BITS, RNG_BITS)
 
 def test(hf, a, b):
-    a %= 2 ** BITS
-    b %= 2 ** BITS
+    a %= 2 ** DOM_BITS
+    b %= 2 ** RNG_BITS
 #    print("f(%s) = %s" % (a, b))
     hf.set(a, b)
 #    print(hf(a))
 
 
-keys = np.random.randint(0, 2 ** BITS, COUNT)
-values = np.random.randint(0, 2 ** BITS, COUNT)
+keys = np.random.randint(0, 2 ** DOM_BITS, COUNT)
+values = np.random.randint(0, 2 ** RNG_BITS, COUNT)
 
 for x in map(lambda x,y: (x,y), keys, values):
     test(hf, x[0], x[1])
