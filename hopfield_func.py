@@ -26,7 +26,8 @@ class HopfieldFunc(HopfieldNetwork):
 
         memory = self.__network.recall(np. concatenate(( \
                     np.zeros(self.__domain_bits - bin_x.size), bin_x, padding)))
-        bin_res = memory[self.__range_bits:]
+        bin_res = memory[self.__domain_bits:]
+        assert(bin_res.size == self.__range_bits)
         return int(''.join(str(int(x)) for x in bin_res), 2)
 
     def __call__(self, x):
