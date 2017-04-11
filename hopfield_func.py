@@ -17,8 +17,7 @@ class HopfieldFunc(HopfieldNetwork):
         bin_x = np.array([int(x) for x in bin(x)[2:]])
         bin_y = np.array([int(y) for y in bin(y)[2:]])
         self.__network.remember(np. concatenate(( \
-                      np.zeros(self.__domain_bits - bin_x.size), \
-                      bin_x, \
+                      np.zeros(self.__domain_bits - bin_x.size), bin_x,
                       np.zeros(self.__range_bits - bin_y.size), bin_y)))
 
     def get(self, x):
