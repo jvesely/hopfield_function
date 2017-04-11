@@ -28,7 +28,7 @@ results = [(x[0], x[1], hf(x[0])) for x in map(lambda x,y: (x,y), keys, values)]
 res = sum(x[1] == x[2] for x in results)
 for x in results:
     if x[2] != x[1]:
-        print("FAIL: hf(%d) = %d instead of %d" % (x[0], x[2], x[1]))
+        print("FAIL: hf(%x) = %x instead of %x" % (x[0], x[2], x[1]))
     else:
-        print("PASS: hf(%d) = %d" % (x[0], x[1]))
+        print("PASS: hf(%x) = %x" % (x[0], x[1]))
 print("Successfully remembered: %d out of %d" % (res, COUNT))
