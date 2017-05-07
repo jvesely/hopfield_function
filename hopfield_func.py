@@ -8,13 +8,13 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 class HopfieldFunc(HopfieldNetwork):
-    def __init__(self, domain_bits, range_bits, iterations = 100, pad_random = True):
+    def __init__(self, domain_bits, range_bits, iterations = 100, pad_random = True, preserve = False):
         assert domain_bits > 0 and domain_bits < 48
         assert range_bits > 0 and range_bits < 48
         self.__domain_bits = domain_bits
         self.__range_bits = range_bits
         #using super() does not work for some reason
-        self.__network = HopfieldNetwork(domain_bits + range_bits, iterations)
+        self.__network = HopfieldNetwork(domain_bits + range_bits, iterations, preserve_elements = 0 if not preserve else domain_bits)
         self.__pad_random = pad_random
 
     def set(self, x, y):
