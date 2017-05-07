@@ -5,12 +5,13 @@ import numpy as np
 class HopfieldNetwork(object):
     async_default = False
     iterations_default = 1000
-    def __init__(self, dim, iterations = iterations_default, async = async_default, hoppfield_original = False):
+    def __init__(self, dim, iterations = iterations_default, async = async_default, hoppfield_original = False, preserve_elements = 0):
         assert dim > 0
         self.__matrix = np.zeros((dim,dim))
         self.__iterations = iterations
         self.__async = async
-        self.__hoppfield_original = hoppfield_original;
+        self.__hoppfield_original = hoppfield_original
+        self.__preserve_elements = preserve_elements
 
     ''' the matrix format is:
         sum{p}{outer_product(memory_i, memory_i)} /N  - (p/N)(Identity)
@@ -35,6 +36,15 @@ class HopfieldNetwork(object):
 
         # add the new memory to memory matrix
         self.__matrix = (self.__matrix + new_memory);
+
+        # The above addition on messed with either non-preserved lines,
+        # or '0.0' elements in the preserved lines.
+        # Force replacing with eye matrix every time fixes this
+        if self.__preserve_elements:
+            # This creates __preserve_elements x data.size matrix with ones
+            # on the diagonal
+            m = np.eye(self.__preserve_elements, data.size)
+            self.__matrix.put(np.arange(m.size),m.flatten());
    
     def recall(self, partial_data, iterations = None):
         assert partial_data.size  == self.__matrix.shape[0]
