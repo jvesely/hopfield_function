@@ -5,13 +5,14 @@ import numpy as np
 class HopfieldNetwork(object):
     async_default = False
     iterations_default = 1000
-    def __init__(self, dim, iterations = iterations_default, async = async_default, hoppfield_original = False, preserve_elements = 0):
+    def __init__(self, dim, iterations = iterations_default, async = async_default, hoppfield_original = False, preserve_elements = 0, clip = np.inf):
         assert dim > 0
         self.__matrix = np.zeros((dim,dim))
         self.__iterations = iterations
         self.__async = async
         self.__hoppfield_original = hoppfield_original
         self.__preserve_elements = preserve_elements
+        self.__clip = clip
 
     ''' the matrix format is:
         sum{p}{outer_product(memory_i, memory_i)} /N  - (p/N)(Identity)
@@ -36,6 +37,12 @@ class HopfieldNetwork(object):
 
         # add the new memory to memory matrix
         self.__matrix = (self.__matrix + new_memory);
+
+        # Clip before replacing preserve lines. Clipping won't impact diagonal
+        # in standard lines, but it might impact diagonal of preserved lines
+        # which gets fixed below, by replacing the lines
+        m = self.__matrix.clip(-self.__clip * scale, self.__clip * scale)
+        assert np.isfinite(self.__clip) or (m == self.__matrix).all()
 
         # The above addition on messed with either non-preserved lines,
         # or '0.0' elements in the preserved lines.
